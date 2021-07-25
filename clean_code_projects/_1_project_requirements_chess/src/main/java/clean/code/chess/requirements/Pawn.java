@@ -11,7 +11,7 @@ public class Pawn {
         this.pieceColor = pieceColor;
     }
 
-    public ChessBoard getChesssBoard() {
+    public ChessBoard getChessBoard() {
         return chessBoard;
     }
 
@@ -44,8 +44,45 @@ public class Pawn {
     }
 
     public void Move(MovementType movementType, int newX, int newY) {
-        throw new UnsupportedOperationException("Need to implement Pawn.Move()") ;
+        if (movementType.equals(MovementType.MOVE) && IsNewPositionValid(newX,newY)) {
+            if (this.pieceColor.equals(PieceColor.WHITE)) {
+                if (newY == yCoordinate + 1 && newY <= ChessBoard.MAX_BOARD_HEIGHT && newX == xCoordinate) {
+                    this.setXCoordinate(newX);
+                    this.setYCoordinate(newY);
+                }
+            } else {
+                if (newY == yCoordinate - 1 && newY >= 0 && newX == xCoordinate) {
+                    this.setXCoordinate(newX);
+                    this.setYCoordinate(newY);
+                }
+            }
+        }
+        if (movementType.equals(MovementType.CAPTURE) && chessBoard.IsLegalBoardPosition(newX, newY)) {
+            if (this.pieceColor.equals(PieceColor.WHITE)) {
+                if (Math.abs(newX - xCoordinate) == 1
+                        && newY == yCoordinate + 1 && newX >= 0
+                        && newY <= ChessBoard.MAX_BOARD_HEIGHT
+                        && chessBoard.checkColor(newX, newY, PieceColor.BLACK)) {
+                    this.setXCoordinate(newX);
+                    this.setYCoordinate(newY);
+                }
+            } else {
+                if (Math.abs(newX - xCoordinate) == 1
+                        && newY == yCoordinate - 1
+                        && newY >= 0
+                        && newX >= 0
+                        && getChessBoard().checkColor(newX, newY, PieceColor.WHITE)) {
+                    this.setXCoordinate(newX);
+                    this.setYCoordinate(newY);
+                }
+            }
+        }
     }
+
+    public boolean IsNewPositionValid(int xCoordinate,int yCoordinate){
+        return (xCoordinate >= 0 && yCoordinate >= 0 && xCoordinate < ChessBoard.MAX_BOARD_WIDTH && yCoordinate < ChessBoard.MAX_BOARD_HEIGHT);
+    }
+
 
     @Override
     public String toString() {
